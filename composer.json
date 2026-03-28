@@ -1,0 +1,12 @@
+{
+    "name": "server/src",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Dashboard\\": "src/"
+        }
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^8.0"
+    }
+}
