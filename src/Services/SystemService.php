@@ -4,22 +4,24 @@ namespace Dashboard\Services;
 
 use Dashboard\Services\ShellExecutorService;
 use Dashboard\Services\StatusSaverService;
+use Dashboard\Helpers\ConfigHelper;
 
 class SystemService
 {
     private ShellExecutorService $shellExecutor;
     private StatusSaverService $statusSaver;
-    private static $service_file = __DIR__ . '/../../data/config.json';
+    private ConfigHelper $config_helper;
 
     public function __construct()
     {
         $this->shellExecutor = new ShellExecutorService();
         $this->statusSaver = new StatusSaverService();
+        $this->config_helper = ConfigHelper::getInstance();
     }
 
     public function getFullStatusReport(): array
     {
-        $services = json_decode(file_get_contents(self::$service_file), true)['services'];
+        $services = $this->config_helper->getConfiguredServices();
         $report = [];
 
         foreach ($services as $service) {

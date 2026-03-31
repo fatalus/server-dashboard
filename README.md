@@ -3,6 +3,9 @@
 Create a JSON file with all Services that should be monitored like this in `./data/config.json`
 ```json
 {
+    "app" : {
+        "saving_interval_mins": 15
+    },
     "services": [
         {
             "name": "nginx.service",
