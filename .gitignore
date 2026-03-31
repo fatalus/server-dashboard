@@ -1,1 +1,4 @@
 vendor/
+data/
+logs/
+.env

@@ -2,93 +2,80 @@
 
 namespace Dashboard\Services;
 
+use Dashboard\Services\ShellExecutorService;
+
 class SystemService
 {
+    private ShellExecutorService $shellExecutor;
+    private static $service_file = __DIR__ . '/../../data/config.json';
+
+    public function __construct()
+    {
+        $this->shellExecutor = new ShellExecutorService();
+    }
+
     public function getFullStatusReport(): array
     {
+        $services = json_decode(file_get_contents(self::$service_file), true)['services'];
+        $report = [];
+
+        foreach ($services as $service) {
+            $status = $this->getServiceStatus($service['name']);
+            $report[$service['display_name']] = $status;
+        }
+
+        return $report;
+    }
+
+    public function getServiceStatus(string $service_name): array
+    {
+        $result = $this->shellExecutor->getServiceStatus($service_name);
+
+        if ($result['status']) {
+            return $this->parseSystemctlShow($result['output']);
+        }
+
         return [
-            'Nginx' => $this->getNginxStatus(),
-            'PHP' => $this->getPhpStatus(),
-            'SSH' => $this->getSshStatus(),
-            'Firewall' => $this->getFirewallStatus(),
+            'process' => [
+                'active' => false,
+                'status' => null,
+                'enabled' => false,
+                'preset' => null,
+            ]
         ];
     }
 
-    public function getNginxStatus(): array
+    // TODO: move to ShellExecutor Service and make it more generic for other init systems
+    private function parseSystemctlShow(array $lines): array
     {
-        $output = [];
-        $retval = 0;
-        exec("systemctl status --quiet nginx.service", $output, $retval);
-
-        return $this->getSystemCtlData($output);
-    }
-
-    public function getPhpStatus(): array
-    {
-        $parts = explode('.', phpversion());
-        $fpm_name = "php" . $parts[0] . "." . $parts[1] . "-fpm.service";
-
-        $output = [];
-        $retval = 0;
-        exec("systemctl status --quiet $fpm_name", $output, $retval);
-
-        return $this->getSystemCtlData($output);
-    }
-
-    public function getSshStatus(): array
-    {
-        $output = [];
-        $retval = 0;
-        exec("systemctl status --quiet ssh.service", $output, $retval);
-
-        return $this->getSystemCtlData($output);
-    }
-
-    public function getFirewallStatus(): array
-    {
-        $output = [];
-        $retval = 0;
-        exec("systemctl status --quiet ufw.service", $output, $retval);
-
-        return $this->getSystemCtlData($output);
-    }
-
-    private function getSystemCtlData(array $systemctl_output) {
         $result = [
             'process' => [
-                'status' => null,
                 'active' => null,
+                'status' => null,
                 'enabled' => false,
                 'preset' => null,
-            ],
-            'status' => [
-                'active_processes' => null,
-                'idle_processes' => null,
-                'traffic' => null,
             ]
         ];
 
-        foreach ($systemctl_output as $line) {
-            $line = trim($line);
-            if (strpos($line, 'Active:') !== false) {
-                if (preg_match('/\(([^)]*)\)/', $line, $match)) {
-                    $result['process']['status'] = $match[1];
-                } else if (preg_match('/Active:\s+(\w+)/', $line, $match)) {
-                    $result['process']['active'] = $match[1];
-                }
-            } else if (strpos($line, 'Loaded:') !== false) {
-                if (preg_match('/\(([^)]*)\)/', $line, $match)) {
-                    $exploded = explode(';', $match[1]);
-                    $result['process']['enabled'] = trim($exploded[1]) === 'enabled' ? true : false;
-                    $result['process']['preset'] = trim(explode(':', $exploded[2])[1]);
-                }
-            } else if (strpos($line, 'Status:') !== false) {
-                if (preg_match('/\"([^"]*)\"/', $line, $match)) {
-                    $parts = explode(',', $match[1]);
-                    $result['status']['active_processes'] = trim(str_replace('Processes active:', '', $parts[0]));
-                    $result['status']['idle_processes'] = trim(str_replace('idle:', '', $parts[1]));
-                    $result['status']['traffic'] = trim(str_replace('Traffic:', '', $parts[4]));
-                }
+        foreach ($lines as $line) {
+            [$key, $value] = array_pad(explode('=', trim($line), 2), 2, null);
+
+            switch ($key) {
+                case 'ActiveState':
+                    $result['process']['active'] = $value === 'active';
+                    break;
+
+                case 'SubState':
+                    $result['process']['status'] = $value;
+                    break;
+
+                case 'UnitFileState':
+                    $result['process']['enabled'] = ($value === 'enabled');
+                    break;
+
+                case 'UnitFilePreset':
+                    $result['process']['preset'] = $value;
+                    break;
             }
         }
 

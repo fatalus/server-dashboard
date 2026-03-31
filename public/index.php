@@ -8,44 +8,12 @@ $service = new SystemService();
 $status = $service->getFullStatusReport();
 
 ?>
-<style>
-    body {
-        font-family: sans-serif;
-        font-size: 16px;
-        margin: 50px;
-    }
-    thead > tr > th {
-        padding-bottom: 0.8rem;
-    }
-    tbody > tr > td {
-        padding: 3px 5px;
-    }
-    .status-card {
-        border: 1px solid #ccc;
-        padding: 10px;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    .status-indicator {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        margin-right: 5px;
-    }
-
-    .status-card:hover {
-        background-color: #f9f9f9;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-</style>
 <!DOCTYPE html>
 <html lang="de">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/index.css">
         <title>Server Dashboard</title>
     </head>
     <body>
@@ -58,13 +26,13 @@ $status = $service->getFullStatusReport();
             <h3>System Status</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
                 <?php foreach ($status as $service_name => $service_status): 
-                    $active = $service_status['process']['active'] ? true : ($service_status['process']['status'] ? true : false);
+                    $is_active = $service_status['process']['active'];
                     ?>
                     <div class="status-card">
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="text-align: left;"><span class="status-indicator" style="background-color: <?php echo $active ? 'green' : 'red'; ?>;"></span><?php echo $service_name; ?></th>
+                                    <th style="text-align: left;"><span class="status-indicator" style="background-color: <?php echo $is_active ? 'green' : 'red'; ?>;"></span><?php echo $service_name; ?></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -81,17 +49,6 @@ $status = $service->getFullStatusReport();
                                     <td>Preset:</td>
                                     <td><?php echo $service_status['process']['preset']; ?></td>
                                 </tr>
-                            
-                                <?php if ($service_status['status']['active_processes'] !== null): ?>
-                                    <tr>
-                                        <td>Active Processes:</td>
-                                        <td><?php echo $service_status['status']['active_processes']; ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Idle Processes:</td>
-                                        <td><?php echo $service_status['status']['idle_processes']; ?></td>
-                                    </tr>
-                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
