@@ -3,15 +3,18 @@
 namespace Dashboard\Services;
 
 use Dashboard\Services\ShellExecutorService;
+use Dashboard\Services\StatusSaverService;
 
 class SystemService
 {
     private ShellExecutorService $shellExecutor;
+    private StatusSaverService $statusSaver;
     private static $service_file = __DIR__ . '/../../data/config.json';
 
     public function __construct()
     {
         $this->shellExecutor = new ShellExecutorService();
+        $this->statusSaver = new StatusSaverService();
     }
 
     public function getFullStatusReport(): array
@@ -21,6 +24,7 @@ class SystemService
 
         foreach ($services as $service) {
             $status = $this->getServiceStatus($service['name']);
+            $this->statusSaver->saveStatus($service['name'], $status);
             $report[$service['display_name']] = $status;
         }
 

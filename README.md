@@ -1,6 +1,6 @@
 # Server Dashboard
 
-Create a JSON file with all Services that should be monitored like this
+Create a JSON file with all Services that should be monitored like this in `./data/config.json`
 ```json
 {
     "services": [
@@ -22,4 +22,11 @@ Create a JSON file with all Services that should be monitored like this
         }
     ]
 }
+```
+
+
+```php
+// Debugging:
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 ```
