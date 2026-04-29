@@ -2,7 +2,9 @@
 
 namespace Dashboard\Helpers;
 
-class ConfigHelper
+use Dashboard\Contracts\HelperInterface;
+
+class ConfigHelper implements HelperInterface
 {
     private static $config_file = __DIR__ . '/../../data/config.json';
     private static $instance = null;

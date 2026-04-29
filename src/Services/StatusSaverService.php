@@ -32,7 +32,7 @@ class StatusSaverService
         $current_status = json_decode(file_get_contents($filepath), true);
 
         $last_timestamp = array_key_last($current_status);
-        if ($last_timestamp !== null && time() - $last_timestamp < $this->config_helper->getAppConfig()['status_save_interval'] * 60) {
+        if ($last_timestamp !== null && time() - $last_timestamp < $this->config_helper->getAppConfig()['saving_interval_mins'] * 60) {
             $current_status[time()] = [
                 'status' => $status,
             ];
