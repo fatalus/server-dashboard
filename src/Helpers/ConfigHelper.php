@@ -6,9 +6,9 @@ use Dashboard\Contracts\HelperInterface;
 
 class ConfigHelper implements HelperInterface
 {
-    private static $config_file = __DIR__ . '/../../data/config.json';
-    private static $instance = null;
-    private static $config = null;
+    private static string $config_file = __DIR__ . '/../../data/config.json';
+    private static ?object $instance = null;
+    private static ?array $config = null;
 
     private function __construct() {
         $this->config = $this->loadConfig();
@@ -31,11 +31,10 @@ class ConfigHelper implements HelperInterface
 
     public static function getInstance(): self
     {
-        static $instance = null;
-        if ($instance === null) {
-            $instance = new self();
+        if (self::$instance === null) {
+            self::$instance = new self();
         }
-        return $instance;
+        return self::$instance;
     }
 
     public function getAppConfig(): array
