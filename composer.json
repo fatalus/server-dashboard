@@ -1,13 +1,28 @@
 {
-    "name": "server/src",
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "fatalus/server-dashboard",
     "type": "project",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Dashboard\\": "src/",
             "App\\": "src/App/"
         }
     },
+    "require": {
+        "php": ">=8.3"
+    },
     "require-dev": {
         "symfony/var-dumper": "^8.0"
+    },
+    "scripts": {
+        "setup": [
+            "composer install --no-dev --prefer-dist",
+            "@php -r \"file_exists('./data/config.json') || (mkdir('./data/') && copy('./schema/config.example.json', './data/config.json'));\""
+        ],
+        "dev": [
+            "composer install",
+            "@php -r \"file_exists('./data/config.json') || (mkdir('./data/') && copy('./schema/config.example.json', './data/config.json'));\""
+        ]
     }
 }

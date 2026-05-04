@@ -1,0 +1,23 @@
+{
+    "app" : {
+        "saving_interval_mins": 15
+    },
+    "services": [
+        {
+            "name": "nginx.service",
+            "display_name": "Nginx"
+        },
+        {
+            "name": "php8.4-fpm.service",
+            "display_name": "PHP"
+        },
+        {
+            "name": "ssh.service",
+            "display_name": "SSH"
+        },
+        {
+            "name": "ufw.service",
+            "display_name": "Firewall (UFW)"
+        }
+    ]
+}
