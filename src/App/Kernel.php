@@ -8,13 +8,21 @@ class Kernel
 {
     public function handle(array $server): string
     {
-        // TODO: Create a Router that handles request more MVC-ish. But thats not really neccessary as this is more or less a single page application.
-        $service = new SystemService();
-        $status = $service->getFullStatusReport();
+        $request_uri = $server['REQUEST_URI'];
 
-        return $this->render('dashboard.php', [
-            'status' => $status
-        ]);
+        return $this->router($request_uri);
+    }
+
+    private function router(string $route): string
+    {
+        $service = new SystemService();
+
+        return match($route) {
+            "/", "/dashboard" => $this->render('dashboard.php', [
+                'status' => $service->getFullStatusReport()
+            ]),
+            default => $this->render("404.php", [])
+        };
     }
 
     private function render(string $template, array $data = []): string

@@ -11,10 +11,10 @@ class ConfigHelper implements HelperInterface
     private static ?array $config = null;
 
     private function __construct() {
-        $this->config = $this->loadConfig();
+        self::$config = self::loadConfig();
     }
 
-    private function loadConfig(): array
+    private static function loadConfig(): array
     {
         if (!file_exists(self::$config_file)) {
             throw new \RuntimeException("Config file not found: " . self::$config_file);
@@ -39,11 +39,11 @@ class ConfigHelper implements HelperInterface
 
     public function getAppConfig(): array
     {
-        return $this->config['app'] ?? [];
+        return self::$config['app'] ?? [];
     }
 
     public function getConfiguredServices(): array
     {
-        return $this->config['services'] ?? [];
+        return self::$config['services'] ?? [];
     }
 }
