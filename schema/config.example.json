@@ -1,6 +1,7 @@
 {
     "app" : {
-        "saving_interval_mins": 15
+        "saving_interval_mins": 15,
+        "dev_env": false
     },
     "services": [
         {

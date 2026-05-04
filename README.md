@@ -48,7 +48,7 @@ To configure the services that should be monitored simply create a JSON file in 
 }
 ```
 ### Roadmap
-- [ ] Add detection for development vs. Production mode and activate error display
+- [x] Add detection for development vs. Production mode and activate error display
 - [ ] Add support for System Utilities like RAM, CPU and Disk space usage
 - [ ] Display data in Graphs (Chart.js)
 - [ ] Add support for different (runit, etc.)

@@ -3,12 +3,23 @@
 namespace App;
 
 use Dashboard\Services\SystemService;
+use Dashboard\Helpers\ConfigHelper;
 
 class Kernel 
 {
     public function handle(array $server): string
     {
+        $config = ConfigHelper::getInstance();
+        $app_config = $config->getAppConfig();
+
         $request_uri = $server['REQUEST_URI'];
+
+        // Not the best solution ever (hard dependency on ConfigHelper), but better than having it hard in index.php
+        if (isset($app_config['dev_env']) && $app_config['dev_env'] === true) {
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);
+        }
 
         return $this->router($request_uri);
     }
