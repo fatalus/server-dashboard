@@ -1,4 +1,10 @@
 # Server Dashboard
+A simple tool to monitor your server and its running services via a Web-Interface built with raw PHP without any Frameworks or libraries.
+Currently only working with Systemd services.
+
+### Requirements
+- composer
+- Web-Server (Nginx, Apache2, etc.) with a php runtime like php-fpm pointing to `./public/index.php`
 
 Create a JSON file with all Services that should be monitored like this in `./data/config.json`
 ```json
@@ -26,7 +32,11 @@ Create a JSON file with all Services that should be monitored like this in `./da
     ]
 }
 ```
-
+### Roadmap
+[ ] Add detection for development vs. Production mode and activate error display
+[ ] Add support for System Utilities like RAM, CPU and Disk space usage
+[ ] Display data in Graphs (Chart.js)
+[ ] Add support for different (runit, etc.)
 
 ```php
 // Debugging:
