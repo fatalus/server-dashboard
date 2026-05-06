@@ -21,6 +21,7 @@ class ShellExecutorService
      */
     private function detectInitSystem(): string
     {
+        // Problem, in e.g. WSL this file contains init(Ubuntu)
         $comm_fp = '/proc/1/comm';
         if (file_exists($comm_fp) && is_readable($comm_fp)) {
             $init_process = trim(file_get_contents($comm_fp));

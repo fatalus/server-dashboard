@@ -15,8 +15,10 @@ composer setup
 ```
 For development purposes simply run this and then create a simple webserver using php -S
 ```bash
-composer dev
-php -S localhost:800 -t public/
+composer dev:setup
+php -S localhost:8000 -t public/
+# or 
+composer dev:run
 ```
 <br>
 

@@ -20,9 +20,12 @@
             "composer install --no-dev --prefer-dist",
             "@php -r \"file_exists('./data/config.json') || (mkdir('./data/') && copy('./schema/config.example.json', './data/config.json'));\""
         ],
-        "dev": [
+        "dev:setup": [
             "composer install",
             "@php -r \"file_exists('./data/config.json') || (mkdir('./data/') && copy('./schema/config.example.json', './data/config.json'));\""
+        ],
+        "dev:run" : [
+            "php -S localhost:8000 -t ./public/"
         ]
     }
 }
